@@ -12,12 +12,12 @@
         angleZ: 0,
     });
 
-    const perspective = 300;
+    const perspective = 1000;
 
     let keysPressed: { [key: string]: boolean } = {};
 
-    const TRANSLATION_SPEED = 100; // px / sec
-    const ROTATION_SPEED = 100; // deg / sec
+    const TRANSLATION_SPEED = 200; // px / sec
+    const ROTATION_SPEED = 150; // deg / sec
 
     let lastTime: number;
     let deltaTime = $state(0);
@@ -76,14 +76,18 @@
     style:transform="translate(-50%, -50%) scale(calc(min(100vw / 960px, 100vh / 540px)))"
     style:perspective="{perspective}px">
     <World perspective={perspective} camera={camera}>
-        <Plane x={480} y={270} z={-50} width={100} height={100} color="red" />
-        <Plane x={480} y={270} z={50} width={100} height={100} color="blue" />
-        <Plane x={430} y={270} z={0} angleY={90} width={100} height={100} color="green" />
-        <Plane x={530} y={270} z={0} angleY={90} width={100} height={100} color="yellow" />
+        <Plane x={480} y={270} z={-250} width={500} height={100} color="red" />
+        <Plane x={480} y={270} z={250} width={500} height={100} color="blue" />
+        <Plane x={230} y={270} z={0} angleY={90} width={500} height={100} color="green" />
+        <Plane x={730} y={270} z={0} angleY={90} width={500} height={100} color="yellow" />
+        <Plane x={480} y={320} z={0} angleX={90} width={500} height={500} color="grey" />
     </World>
 </div>
 
 <span>FPS: {displayedFPS}</span>
+<p>
+    Camera position: {camera.x}, {camera.y}, {camera.z}
+</p>
 
 <style>
 </style>
