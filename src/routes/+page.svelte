@@ -71,16 +71,21 @@
 
 <svelte:window onkeydown={e => keysPressed[e.key] = true} onkeyup={e => keysPressed[e.key] = false} />
 
-<div style:width="960px" style:height="540px" style:background-color="black"
+<div style:width="960px" style:height="540px" style:background-color="deepskyblue"
     style:position="fixed" style:left="50vw" style:top="50vh" style:overflow="hidden"
     style:transform="translate(-50%, -50%) scale(calc(min(100vw / 960px, 100vh / 540px)))"
     style:perspective="{perspective}px">
     <World perspective={perspective} camera={camera}>
-        <Plane x={480} y={270} z={-250} width={500} height={100} color="red" />
-        <Plane x={480} y={270} z={250} width={500} height={100} color="blue" />
-        <Plane x={230} y={270} z={0} angleY={90} width={500} height={100} color="green" />
-        <Plane x={730} y={270} z={0} angleY={90} width={500} height={100} color="yellow" />
-        <Plane x={480} y={320} z={0} angleX={90} width={500} height={500} color="grey" />
+        <!-- Ground -->
+        <Plane x={480} y={320} z={0} angleX={90} width={1600} height={1600} color="forestgreen" />
+
+        <!-- House -->
+        <Plane x={480} y={270} z={-400} width={100} height={100} color="firebrick" />
+        <Plane x={480} y={270} z={-500} width={100} height={100} color="firebrick" brightness={70} />
+        <Plane x={530} y={270} z={-450} angleY={90} width={100} height={100} color="firebrick" brightness={85} />
+        <Plane x={430} y={270} z={-450} angleY={90} width={100} height={100} color="firebrick" brightness={85} />
+        <Plane x={439} y={214} angleX={90} angleY={-35} z={-450} width={100} height={100} color="firebrick" brightness={50} />
+        <Plane x={521} y={214} angleX={90} angleY={35} z={-450} width={100} height={100} color="firebrick" brightness={50} />
     </World>
 </div>
 
