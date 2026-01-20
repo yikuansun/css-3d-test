@@ -59,7 +59,26 @@
         animationFrameId = requestAnimationFrame(tick);
     }
 
+    let worldMatrix: Array<Array<Array<number>>> = $state([]);
+
+    function createWorldMatrix(size: number) {
+        worldMatrix = [];
+        for (let x = 0; x < size; x++) {
+            worldMatrix.push([]);
+            for (let y = 0; y < size; y++) {
+                worldMatrix[x].push([]);
+                for (let z = 0; z < size; z++) {
+                    worldMatrix[x][y].push(0);
+                }
+            }
+        }
+        worldMatrix[0][0][0] = 1;
+
+        console.log(worldMatrix);
+    }
+
     onMount(() => {
+        createWorldMatrix(10);
         lastTime = Date.now();
         animationFrameId = requestAnimationFrame(tick);
     });
@@ -87,16 +106,29 @@
     style:transform="translate(-50%, -50%) scale(calc(min(100vw / 960px, 100vh / 540px)))"
     style:perspective="{perspective}px">
     <World perspective={perspective} camera={camera}>
-        <!-- Ground -->
-        <Plane x={480} y={320} z={0} angleX={90} width={1600} height={1600} color="forestgreen" />
-
-        <!-- House -->
-        <Plane x={480} y={270} z={-400} width={100} height={100} color="firebrick" />
-        <Plane x={480} y={270} z={-500} width={100} height={100} color="firebrick" brightness={70} />
-        <Plane x={530} y={270} z={-450} angleY={90} width={100} height={100} color="firebrick" brightness={85} />
-        <Plane x={430} y={270} z={-450} angleY={90} width={100} height={100} color="firebrick" brightness={85} />
-        <Plane x={439} y={214} angleX={90} angleY={-35} z={-450} width={100} height={100} color="firebrick" brightness={50} />
-        <Plane x={521} y={214} angleX={90} angleY={35} z={-450} width={100} height={100} color="firebrick" brightness={50} />
+        {#each worldMatrix as row, layerX}
+            {#each row as column, layerY}
+                {#each column as cell, layerZ}
+                    {@const cubeX = (layerX - worldMatrix.length / 2) * 50}
+                    {@const cubeY = (layerY - worldMatrix.length / 2) * 50}
+                    {@const cubeZ = (layerZ - worldMatrix.length / 2) * 50}
+                    {#if cell > 0}
+                        <!-- Top -->
+                        <Plane x={cubeX} y={cubeY - 25} z={cubeZ} angleX={90} width={50} height={50} color="forestgreen" />
+                        <!-- Bottom -->
+                        <Plane x={cubeX} y={cubeY + 25} z={cubeZ} angleX={90} width={50} height={50} color="forestgreen" />
+                        <!-- Left -->
+                        <Plane x={cubeX - 25} y={cubeY} z={cubeZ} angleY={90} width={50} height={50} color="forestgreen" />
+                        <!-- Right -->
+                        <Plane x={cubeX + 25} y={cubeY} z={cubeZ} angleY={90} width={50} height={50} color="forestgreen" />
+                        <!-- Front -->
+                        <Plane x={cubeX} y={cubeY} z={cubeZ - 25} width={50} height={50} color="forestgreen" />
+                        <!-- Back -->
+                        <Plane x={cubeX} y={cubeY} z={cubeZ + 25} width={50} height={50} color="forestgreen" />
+                    {/if}
+                {/each}
+            {/each}
+        {/each}
     </World>
 </div>
 
