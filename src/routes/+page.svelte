@@ -69,7 +69,18 @@
     });
 </script>
 
-<svelte:window onkeydown={e => keysPressed[e.key] = true} onkeyup={e => keysPressed[e.key] = false} />
+<svelte:window onkeydown={e => keysPressed[e.key] = true} onkeyup={e => keysPressed[e.key] = false}
+    on:click={(e) => {
+        if (!document.pointerLockElement) {
+            document.body.requestPointerLock();
+        }
+    }}
+    on:mousemove={(e) => {
+        if (document.pointerLockElement) {
+            camera.angleY += (e.movementX / 1000) * ROTATION_SPEED;
+            camera.angleX -= (e.movementY / 1000) * ROTATION_SPEED;
+        }
+    }} />
 
 <div style:width="960px" style:height="540px" style:background-color="deepskyblue"
     style:position="fixed" style:left="50vw" style:top="50vh" style:overflow="hidden"
