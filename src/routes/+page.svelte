@@ -82,7 +82,8 @@
                 }
             }
         }
-        worldMatrix[0][7][4] = 1
+        worldMatrix[0][7][4] = 1;
+        worldMatrix[2][7][2] = 1
 
         console.log(worldMatrix);
     }
@@ -125,27 +126,27 @@
                     {#if cell > 0}
                         {#if worldMatrix?.[layerX]?.[layerY - 1]?.[layerZ] === 0}
                             <!-- Top -->
-                            <Plane x={cubeX} y={cubeY - CUBE_SIZE / 2} z={cubeZ} angleX={90} width={CUBE_SIZE} height={CUBE_SIZE} image="/block_textures/{TEXTURE_NAMES[cell]}_top.png" />
+                            <Plane x={cubeX} y={cubeY - CUBE_SIZE / 2} z={cubeZ} angleX={90} width={CUBE_SIZE} height={CUBE_SIZE} image="/block_textures/{TEXTURE_NAMES[cell]}_top.png" brightness={120} />
                         {/if}
                         {#if worldMatrix?.[layerX]?.[layerY + 1]?.[layerZ] === 0}
                             <!-- Bottom -->
-                            <Plane x={cubeX} y={cubeY + CUBE_SIZE / 2} z={cubeZ} angleX={90} width={CUBE_SIZE} height={CUBE_SIZE} image="/block_textures/{TEXTURE_NAMES[cell]}_bottom.png" />
+                            <Plane x={cubeX} y={cubeY + CUBE_SIZE / 2} z={cubeZ} angleX={90} width={CUBE_SIZE} height={CUBE_SIZE} image="/block_textures/{TEXTURE_NAMES[cell]}_bottom.png" brightness={40} />
                         {/if}
                         {#if worldMatrix?.[layerX - 1]?.[layerY]?.[layerZ] === 0}
                             <!-- Left -->
-                            <Plane x={cubeX - CUBE_SIZE / 2} y={cubeY} z={cubeZ} angleY={90} width={CUBE_SIZE} height={CUBE_SIZE} image="/block_textures/{TEXTURE_NAMES[cell]}_side.png" />
+                            <Plane x={cubeX - CUBE_SIZE / 2} y={cubeY} z={cubeZ} angleY={90} width={CUBE_SIZE} height={CUBE_SIZE} image="/block_textures/{TEXTURE_NAMES[cell]}_side.png" brightness={60} />
                         {/if}
                         {#if worldMatrix?.[layerX + 1]?.[layerY]?.[layerZ] === 0}
                             <!-- Right -->
-                            <Plane x={cubeX + CUBE_SIZE / 2} y={cubeY} z={cubeZ} angleY={90} width={CUBE_SIZE} height={CUBE_SIZE} image="/block_textures/{TEXTURE_NAMES[cell]}_side.png" />
+                            <Plane x={cubeX + CUBE_SIZE / 2} y={cubeY} z={cubeZ} angleY={90} width={CUBE_SIZE} height={CUBE_SIZE} image="/block_textures/{TEXTURE_NAMES[cell]}_side.png" brightness={100} />
                         {/if}
                         {#if worldMatrix?.[layerX]?.[layerY]?.[layerZ - 1] === 0}
                             <!-- Front -->
-                            <Plane x={cubeX} y={cubeY} z={cubeZ - CUBE_SIZE / 2} width={CUBE_SIZE} height={CUBE_SIZE} image="/block_textures/{TEXTURE_NAMES[cell]}_side.png" />
+                            <Plane x={cubeX} y={cubeY} z={cubeZ - CUBE_SIZE / 2} width={CUBE_SIZE} height={CUBE_SIZE} image="/block_textures/{TEXTURE_NAMES[cell]}_side.png" brightness={80} />
                         {/if}
                         {#if worldMatrix?.[layerX]?.[layerY]?.[layerZ + 1] === 0}
                             <!-- Back -->
-                            <Plane x={cubeX} y={cubeY} z={cubeZ + CUBE_SIZE / 2} width={CUBE_SIZE} height={CUBE_SIZE} image="/block_textures/{TEXTURE_NAMES[cell]}_side.png" />
+                            <Plane x={cubeX} y={cubeY} z={cubeZ + CUBE_SIZE / 2} width={CUBE_SIZE} height={CUBE_SIZE} image="/block_textures/{TEXTURE_NAMES[cell]}_side.png" brightness={80} />
                         {/if}
                     {/if}
                 {/each}
