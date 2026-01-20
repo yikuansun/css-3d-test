@@ -10,6 +10,8 @@
         angleX: 0,
         angleY: 0,
         angleZ: 0,
+        xOffset: 480,
+        yOffset: 270,
     });
 
     const perspective = 1000;
@@ -69,10 +71,11 @@
                 worldMatrix[x].push([]);
                 for (let z = 0; z < size; z++) {
                     worldMatrix[x][y].push(0);
+                    if (y > size - 3) worldMatrix[x][y][z] = 1;
                 }
             }
         }
-        worldMatrix[0][0][0] = 1;
+        worldMatrix[0][7][4] = 1
 
         console.log(worldMatrix);
     }
@@ -113,18 +116,30 @@
                     {@const cubeY = (layerY - worldMatrix.length / 2) * 50}
                     {@const cubeZ = (layerZ - worldMatrix.length / 2) * 50}
                     {#if cell > 0}
-                        <!-- Top -->
-                        <Plane x={cubeX} y={cubeY - 25} z={cubeZ} angleX={90} width={50} height={50} color="forestgreen" />
-                        <!-- Bottom -->
-                        <Plane x={cubeX} y={cubeY + 25} z={cubeZ} angleX={90} width={50} height={50} color="forestgreen" />
-                        <!-- Left -->
-                        <Plane x={cubeX - 25} y={cubeY} z={cubeZ} angleY={90} width={50} height={50} color="forestgreen" />
-                        <!-- Right -->
-                        <Plane x={cubeX + 25} y={cubeY} z={cubeZ} angleY={90} width={50} height={50} color="forestgreen" />
-                        <!-- Front -->
-                        <Plane x={cubeX} y={cubeY} z={cubeZ - 25} width={50} height={50} color="forestgreen" />
-                        <!-- Back -->
-                        <Plane x={cubeX} y={cubeY} z={cubeZ + 25} width={50} height={50} color="forestgreen" />
+                        {#if worldMatrix?.[layerX]?.[layerY - 1]?.[layerZ] === 0}
+                            <!-- Top -->
+                            <Plane x={cubeX} y={cubeY - 25} z={cubeZ} angleX={90} width={50} height={50} color="forestgreen" text="x: {cubeX}, y: {cubeY - 25}, z: {cubeZ}" />
+                        {/if}
+                        {#if worldMatrix?.[layerX]?.[layerY + 1]?.[layerZ] === 0}
+                            <!-- Bottom -->
+                            <Plane x={cubeX} y={cubeY + 25} z={cubeZ} angleX={90} width={50} height={50} color="forestgreen" text="bottom" />
+                        {/if}
+                        {#if worldMatrix?.[layerX - 1]?.[layerY]?.[layerZ] === 0}
+                            <!-- Left -->
+                            <Plane x={cubeX - 25} y={cubeY} z={cubeZ} angleY={90} width={50} height={50} color="forestgreen" />
+                        {/if}
+                        {#if worldMatrix?.[layerX + 1]?.[layerY]?.[layerZ] === 0}
+                            <!-- Right -->
+                            <Plane x={cubeX + 25} y={cubeY} z={cubeZ} angleY={90} width={50} height={50} color="forestgreen" />
+                        {/if}
+                        {#if worldMatrix?.[layerX]?.[layerY]?.[layerZ - 1] === 0}
+                            <!-- Front -->
+                            <Plane x={cubeX} y={cubeY} z={cubeZ - 25} width={50} height={50} color="forestgreen" />
+                        {/if}
+                        {#if worldMatrix?.[layerX]?.[layerY]?.[layerZ + 1] === 0}
+                            <!-- Back -->
+                            <Plane x={cubeX} y={cubeY} z={cubeZ + 25} width={50} height={50} color="forestgreen" />
+                        {/if}
                     {/if}
                 {/each}
             {/each}

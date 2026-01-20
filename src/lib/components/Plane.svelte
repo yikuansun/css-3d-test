@@ -1,5 +1,5 @@
 <script>
-    let { x, y, z = 0, angleX = 0, angleY = 0, angleZ = 0, width, height, color = "red", brightness = 100 } = $props();
+    let { x, y, z = 0, angleX = 0, angleY = 0, angleZ = 0, width, height, color = "red", brightness = 100, text="" } = $props();
 </script>
 
 <div
@@ -11,4 +11,4 @@
     style:height="{height}px"
     style:background-color="{color}"
     style:filter="brightness({brightness}%)"
-></div>
+>{text}</div>
