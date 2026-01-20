@@ -14,6 +14,11 @@
         yOffset: 270,
     });
 
+    const TEXTURE_NAMES: { [key: number]: string } = {
+        1: "grass",
+        2: "dirt",
+    };
+
     const perspective = 1000;
 
     let keysPressed: { [key: string]: boolean } = {};
@@ -118,27 +123,27 @@
                     {#if cell > 0}
                         {#if worldMatrix?.[layerX]?.[layerY - 1]?.[layerZ] === 0}
                             <!-- Top -->
-                            <Plane x={cubeX} y={cubeY - 25} z={cubeZ} angleX={90} width={50} height={50} color="forestgreen" text="x: {cubeX}, y: {cubeY - 25}, z: {cubeZ}" />
+                            <Plane x={cubeX} y={cubeY - 25} z={cubeZ} angleX={90} width={50} height={50} image="/block_textures/{TEXTURE_NAMES[cell]}_top.png" />
                         {/if}
                         {#if worldMatrix?.[layerX]?.[layerY + 1]?.[layerZ] === 0}
                             <!-- Bottom -->
-                            <Plane x={cubeX} y={cubeY + 25} z={cubeZ} angleX={90} width={50} height={50} color="forestgreen" text="bottom" />
+                            <Plane x={cubeX} y={cubeY + 25} z={cubeZ} angleX={90} width={50} height={50} image="/block_textures/{TEXTURE_NAMES[cell]}_bottom.png" />
                         {/if}
                         {#if worldMatrix?.[layerX - 1]?.[layerY]?.[layerZ] === 0}
                             <!-- Left -->
-                            <Plane x={cubeX - 25} y={cubeY} z={cubeZ} angleY={90} width={50} height={50} color="forestgreen" />
+                            <Plane x={cubeX - 25} y={cubeY} z={cubeZ} angleY={90} width={50} height={50} image="/block_textures/{TEXTURE_NAMES[cell]}_side.png" />
                         {/if}
                         {#if worldMatrix?.[layerX + 1]?.[layerY]?.[layerZ] === 0}
                             <!-- Right -->
-                            <Plane x={cubeX + 25} y={cubeY} z={cubeZ} angleY={90} width={50} height={50} color="forestgreen" />
+                            <Plane x={cubeX + 25} y={cubeY} z={cubeZ} angleY={90} width={50} height={50} image="/block_textures/{TEXTURE_NAMES[cell]}_side.png" />
                         {/if}
                         {#if worldMatrix?.[layerX]?.[layerY]?.[layerZ - 1] === 0}
                             <!-- Front -->
-                            <Plane x={cubeX} y={cubeY} z={cubeZ - 25} width={50} height={50} color="forestgreen" />
+                            <Plane x={cubeX} y={cubeY} z={cubeZ - 25} width={50} height={50} image="/block_textures/{TEXTURE_NAMES[cell]}_side.png" />
                         {/if}
                         {#if worldMatrix?.[layerX]?.[layerY]?.[layerZ + 1] === 0}
                             <!-- Back -->
-                            <Plane x={cubeX} y={cubeY} z={cubeZ + 25} width={50} height={50} color="forestgreen" />
+                            <Plane x={cubeX} y={cubeY} z={cubeZ + 25} width={50} height={50} image="/block_textures/{TEXTURE_NAMES[cell]}_side.png" />
                         {/if}
                     {/if}
                 {/each}

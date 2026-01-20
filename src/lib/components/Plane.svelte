@@ -1,5 +1,5 @@
 <script>
-    let { x, y, z = 0, angleX = 0, angleY = 0, angleZ = 0, width, height, color = "red", brightness = 100, text="" } = $props();
+    let { x, y, z = 0, angleX = 0, angleY = 0, angleZ = 0, width, height, color = "red", image = "", brightness = 100, text="" } = $props();
 </script>
 
 <div
@@ -10,5 +10,8 @@
     style:width="{width}px"
     style:height="{height}px"
     style:background-color="{color}"
+    style:background-image="url('{image}')"
+    style:background-size="cover"
+    style:image-rendering="pixelated"
     style:filter="brightness({brightness}%)"
 >{text}</div>
