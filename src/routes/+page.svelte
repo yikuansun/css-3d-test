@@ -19,7 +19,7 @@
         2: "dirt",
     };
 
-    const CUBE_SIZE = 32;
+    const CUBE_SIZE = 48;
 
     const perspective = 1024;
 
