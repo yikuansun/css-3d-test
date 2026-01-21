@@ -88,10 +88,13 @@
         console.log(worldMatrix);
     }
 
+    let pointerEnabled = $state(false);
+
     onMount(() => {
         createWorldMatrix(10);
         lastTime = Date.now();
         animationFrameId = requestAnimationFrame(tick);
+        pointerEnabled = document?.pointerLockElement !== null;
     });
 
     onDestroy(() => {
@@ -111,6 +114,8 @@
             camera.angleX -= (e.movementY / 1000) * ROTATION_SPEED;
         }
     }} />
+
+<svelte:document onpointerlockchange={() => { pointerEnabled = document?.pointerLockElement !== null; }} />
 
 <div style:width="960px" style:height="540px" style:background-color="deepskyblue"
     style:position="fixed" style:left="50vw" style:top="50vh" style:overflow="hidden"
@@ -153,6 +158,10 @@
             {/each}
         {/each}
     </World>
+    {#if pointerEnabled}
+        <div style:pointer-events="none" style:position="absolute" style:top="50%" style:left="50%" style:transform="translate(-50%, -50%)" style:width="16px" style:height="2px" style:backdrop-filter="invert()"></div>
+        <div style:pointer-events="none" style:position="absolute" style:top="50%" style:left="50%" style:transform="translate(-50%, -50%)" style:width="2px" style:height="16px" style:backdrop-filter="invert()"></div>
+    {/if}
 </div>
 
 <span>FPS: {displayedFPS}</span>
