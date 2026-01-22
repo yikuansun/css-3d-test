@@ -56,11 +56,13 @@
             camera.z += TRANSLATION_SPEED * Math.sin(camera.angleY * Math.PI / 180) * deltaTime;
         }
 
-        // camera rotation
+        /*// camera rotation
         if (keysPressed["ArrowLeft"]) camera.angleY -= ROTATION_SPEED * deltaTime;
         if (keysPressed["ArrowRight"]) camera.angleY += ROTATION_SPEED * deltaTime;
         if (keysPressed["ArrowUp"]) camera.angleX += ROTATION_SPEED * deltaTime;
-        if (keysPressed["ArrowDown"]) camera.angleX -= ROTATION_SPEED * deltaTime;
+        if (keysPressed["ArrowDown"]) camera.angleX -= ROTATION_SPEED * deltaTime;*/
+        
+        scanBlockFocus();
 
         if (frameCount % 60 === 0) displayedFPS = Math.floor(1 / deltaTime);
         frameCount++;
@@ -164,10 +166,7 @@
                 if (worldMatrix?.[placingBlockPosition[0]]?.[placingBlockPosition[1]]?.[placingBlockPosition[2]] === 0)
                     worldMatrix[placingBlockPosition[0]][placingBlockPosition[1]][placingBlockPosition[2]] = 1;
             }
-            scanBlockFocus();
         }
-    }}
-    oncontextmenu={(e) => {
     }}
     onmousemove={(e) => {
         if (document.pointerLockElement) {
@@ -176,8 +175,6 @@
 
             if (camera.angleX > 90) camera.angleX = 90;
             if (camera.angleX < -90) camera.angleX = -90;
-
-            scanBlockFocus();
         }
     }} />
 
