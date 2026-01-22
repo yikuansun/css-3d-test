@@ -106,8 +106,32 @@
         ];
     }
 
-    let focusedBlockPosition = $state([0, 7, 4]);
+    let focusedBlockPosition = $state([0, 0, 0]);
     const focusedBlockStyle = "outline: 1px solid white; outline-offset: -1px;";
+    let placingBlockPosition = $state([0, 0, 0]);
+
+    function scanBlockFocus() {
+        const radX = camera.angleX * Math.PI / 180;
+        const radY = camera.angleY * Math.PI / 180;
+        const dirX = Math.cos(radX) * Math.sin(radY);
+        const dirY = - Math.sin(radX);
+        const dirZ = - Math.cos(radX) * Math.cos(radY);
+
+        let focusedBlockWorldPosition = [camera.x, camera.y, camera.z];
+        focusedBlockPosition = worldPositionToGridCoord(focusedBlockWorldPosition[0], focusedBlockWorldPosition[1], focusedBlockWorldPosition[2]);
+        const STEP_SIZE = CUBE_SIZE / 4;
+        while (worldMatrix?.[focusedBlockPosition[0]]?.[focusedBlockPosition[1]]?.[focusedBlockPosition[2]] === 0) {
+            focusedBlockWorldPosition[0] += STEP_SIZE * dirX;
+            focusedBlockWorldPosition[1] += STEP_SIZE * dirY;
+            focusedBlockWorldPosition[2] += STEP_SIZE * dirZ;
+            focusedBlockPosition = worldPositionToGridCoord(focusedBlockWorldPosition[0], focusedBlockWorldPosition[1], focusedBlockWorldPosition[2]);
+        }
+        placingBlockPosition = worldPositionToGridCoord(
+            focusedBlockWorldPosition[0] - STEP_SIZE * dirX,
+            focusedBlockWorldPosition[1] - STEP_SIZE * dirY,
+            focusedBlockWorldPosition[2] - STEP_SIZE * dirZ,
+        );
+    }
 
     onMount(() => {
         createWorldMatrix(10);
@@ -126,12 +150,24 @@
         if (!document.pointerLockElement) {
             document.body.requestPointerLock();
         }
-        else {
-            // mine
-            if (worldMatrix?.[focusedBlockPosition[0]]?.[focusedBlockPosition[1]]?.[focusedBlockPosition[2]] !== 0) {
-                worldMatrix[focusedBlockPosition[0]][focusedBlockPosition[1]][focusedBlockPosition[2]] = 0;
+    }}
+    onmousedown={(e) => {
+        if (document.pointerLockElement) {
+            if (e.button === 0) {
+                // mine
+                if (worldMatrix?.[focusedBlockPosition[0]]?.[focusedBlockPosition[1]]?.[focusedBlockPosition[2]] !== 0) {
+                    worldMatrix[focusedBlockPosition[0]][focusedBlockPosition[1]][focusedBlockPosition[2]] = 0;
+                }
             }
+            else if (e.button === 2) {
+                console.log("right clik", placingBlockPosition)
+                if (worldMatrix?.[placingBlockPosition[0]]?.[placingBlockPosition[1]]?.[placingBlockPosition[2]] === 0)
+                    worldMatrix[placingBlockPosition[0]][placingBlockPosition[1]][placingBlockPosition[2]] = 1;
+            }
+            scanBlockFocus();
         }
+    }}
+    oncontextmenu={(e) => {
     }}
     onmousemove={(e) => {
         if (document.pointerLockElement) {
@@ -141,21 +177,7 @@
             if (camera.angleX > 90) camera.angleX = 90;
             if (camera.angleX < -90) camera.angleX = -90;
 
-            const radX = camera.angleX * Math.PI / 180;
-            const radY = camera.angleY * Math.PI / 180;
-            const dirX = Math.cos(radX) * Math.sin(radY);
-            const dirY = - Math.sin(radX);
-            const dirZ = - Math.cos(radX) * Math.cos(radY);
-
-            let focusedBlockWorldPosition = [camera.x, camera.y, camera.z];
-            focusedBlockPosition = worldPositionToGridCoord(focusedBlockWorldPosition[0], focusedBlockWorldPosition[1], focusedBlockWorldPosition[2]);
-            const STEP_SIZE = CUBE_SIZE / 4;
-            while (worldMatrix?.[focusedBlockPosition[0]]?.[focusedBlockPosition[1]]?.[focusedBlockPosition[2]] === 0) {
-                focusedBlockWorldPosition[0] += STEP_SIZE * dirX;
-                focusedBlockWorldPosition[1] += STEP_SIZE * dirY;
-                focusedBlockWorldPosition[2] += STEP_SIZE * dirZ;
-                focusedBlockPosition = worldPositionToGridCoord(focusedBlockWorldPosition[0], focusedBlockWorldPosition[1], focusedBlockWorldPosition[2]);
-            }
+            scanBlockFocus();
         }
     }} />
 
