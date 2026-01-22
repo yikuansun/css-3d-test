@@ -90,6 +90,25 @@
 
     let pointerEnabled = $state(false);
 
+    function gridCoordToBlockPosition(layerX: number, layerY: number, layerZ: number) {
+        return {
+            x: (layerX - worldMatrix.length / 2) * CUBE_SIZE,
+            y: (layerY - worldMatrix.length / 2) * CUBE_SIZE,
+            z: (layerZ - worldMatrix.length / 2) * CUBE_SIZE,
+        };
+    }
+
+    function worldPositionToGridCoord(x: number, y: number, z: number) {
+        return [
+            Math.round(x / CUBE_SIZE + worldMatrix.length / 2),
+            Math.round(y / CUBE_SIZE + worldMatrix.length / 2),
+            Math.round(z / CUBE_SIZE + worldMatrix.length / 2),
+        ];
+    }
+
+    let focusedBlockPosition = $state([0, 7, 4]);
+    const focusedBlockStyle = "outline: 1px solid white; outline-offset: -1px;";
+
     onMount(() => {
         createWorldMatrix(10);
         lastTime = Date.now();
@@ -112,6 +131,25 @@
         if (document.pointerLockElement) {
             camera.angleY += (e.movementX / 1000) * ROTATION_SPEED;
             camera.angleX -= (e.movementY / 1000) * ROTATION_SPEED;
+
+            if (camera.angleX > 90) camera.angleX = 90;
+            if (camera.angleX < -90) camera.angleX = -90;
+
+            const radX = camera.angleX * Math.PI / 180;
+            const radY = camera.angleY * Math.PI / 180;
+            const dirX = Math.cos(radX) * Math.sin(radY);
+            const dirY = - Math.sin(radX);
+            const dirZ = - Math.cos(radX) * Math.cos(radY);
+
+            let focusedBlockWorldPosition = [camera.x, camera.y, camera.z];
+            focusedBlockPosition = worldPositionToGridCoord(focusedBlockWorldPosition[0], focusedBlockWorldPosition[1], focusedBlockWorldPosition[2]);
+            const STEP_SIZE = CUBE_SIZE / 4;
+            while (worldMatrix?.[focusedBlockPosition[0]]?.[focusedBlockPosition[1]]?.[focusedBlockPosition[2]] === 0) {
+                focusedBlockWorldPosition[0] += STEP_SIZE * dirX;
+                focusedBlockWorldPosition[1] += STEP_SIZE * dirY;
+                focusedBlockWorldPosition[2] += STEP_SIZE * dirZ;
+                focusedBlockPosition = worldPositionToGridCoord(focusedBlockWorldPosition[0], focusedBlockWorldPosition[1], focusedBlockWorldPosition[2]);
+            }
         }
     }} />
 
@@ -125,33 +163,37 @@
         {#each worldMatrix as row, layerX}
             {#each row as column, layerY}
                 {#each column as cell, layerZ}
-                    {@const cubeX = (layerX - worldMatrix.length / 2) * CUBE_SIZE}
-                    {@const cubeY = (layerY - worldMatrix.length / 2) * CUBE_SIZE}
-                    {@const cubeZ = (layerZ - worldMatrix.length / 2) * CUBE_SIZE}
+                    {@const { x: cubeX, y: cubeY, z: cubeZ } = gridCoordToBlockPosition(layerX, layerY, layerZ)}
                     {#if cell > 0}
                         {#if worldMatrix?.[layerX]?.[layerY - 1]?.[layerZ] === 0}
                             <!-- Top -->
-                            <Plane x={cubeX} y={cubeY - CUBE_SIZE / 2} z={cubeZ} angleX={90} width={CUBE_SIZE} height={CUBE_SIZE} image="/block_textures/{TEXTURE_NAMES[cell]}_top.png" brightness={120} />
+                            <Plane x={cubeX} y={cubeY - CUBE_SIZE / 2} z={cubeZ} angleX={90} width={CUBE_SIZE} height={CUBE_SIZE} image="/block_textures/{TEXTURE_NAMES[cell]}_top.png" brightness={120}
+                                style={focusedBlockPosition[0] === layerX && focusedBlockPosition[1] === layerY && focusedBlockPosition[2] === layerZ ? focusedBlockStyle : ""} text="x: {layerX}, y: {layerY}, z: {layerZ}" />
                         {/if}
                         {#if worldMatrix?.[layerX]?.[layerY + 1]?.[layerZ] === 0}
                             <!-- Bottom -->
-                            <Plane x={cubeX} y={cubeY + CUBE_SIZE / 2} z={cubeZ} angleX={90} width={CUBE_SIZE} height={CUBE_SIZE} image="/block_textures/{TEXTURE_NAMES[cell]}_bottom.png" brightness={40} />
+                            <Plane x={cubeX} y={cubeY + CUBE_SIZE / 2} z={cubeZ} angleX={90} width={CUBE_SIZE} height={CUBE_SIZE} image="/block_textures/{TEXTURE_NAMES[cell]}_bottom.png" brightness={40}
+                                style={focusedBlockPosition[0] === layerX && focusedBlockPosition[1] === layerY && focusedBlockPosition[2] === layerZ ? focusedBlockStyle : ""} text="x: {layerX}, y: {layerY}, z: {layerZ}" />
                         {/if}
                         {#if worldMatrix?.[layerX - 1]?.[layerY]?.[layerZ] === 0}
                             <!-- Left -->
-                            <Plane x={cubeX - CUBE_SIZE / 2} y={cubeY} z={cubeZ} angleY={90} width={CUBE_SIZE} height={CUBE_SIZE} image="/block_textures/{TEXTURE_NAMES[cell]}_side.png" brightness={60} />
+                            <Plane x={cubeX - CUBE_SIZE / 2} y={cubeY} z={cubeZ} angleY={90} width={CUBE_SIZE} height={CUBE_SIZE} image="/block_textures/{TEXTURE_NAMES[cell]}_side.png" brightness={60}
+                                style={focusedBlockPosition[0] === layerX && focusedBlockPosition[1] === layerY && focusedBlockPosition[2] === layerZ ? focusedBlockStyle : ""} text="x: {layerX}, y: {layerY}, z: {layerZ}" />
                         {/if}
                         {#if worldMatrix?.[layerX + 1]?.[layerY]?.[layerZ] === 0}
                             <!-- Right -->
-                            <Plane x={cubeX + CUBE_SIZE / 2} y={cubeY} z={cubeZ} angleY={90} width={CUBE_SIZE} height={CUBE_SIZE} image="/block_textures/{TEXTURE_NAMES[cell]}_side.png" brightness={100} />
+                            <Plane x={cubeX + CUBE_SIZE / 2} y={cubeY} z={cubeZ} angleY={90} width={CUBE_SIZE} height={CUBE_SIZE} image="/block_textures/{TEXTURE_NAMES[cell]}_side.png" brightness={100}
+                                style={focusedBlockPosition[0] === layerX && focusedBlockPosition[1] === layerY && focusedBlockPosition[2] === layerZ ? focusedBlockStyle : ""} text="x: {layerX}, y: {layerY}, z: {layerZ}" />
                         {/if}
                         {#if worldMatrix?.[layerX]?.[layerY]?.[layerZ - 1] === 0}
                             <!-- Front -->
-                            <Plane x={cubeX} y={cubeY} z={cubeZ - CUBE_SIZE / 2} width={CUBE_SIZE} height={CUBE_SIZE} image="/block_textures/{TEXTURE_NAMES[cell]}_side.png" brightness={80} />
+                            <Plane x={cubeX} y={cubeY} z={cubeZ - CUBE_SIZE / 2} width={CUBE_SIZE} height={CUBE_SIZE} image="/block_textures/{TEXTURE_NAMES[cell]}_side.png" brightness={80}
+                                style={focusedBlockPosition[0] === layerX && focusedBlockPosition[1] === layerY && focusedBlockPosition[2] === layerZ ? focusedBlockStyle : ""} text="x: {layerX}, y: {layerY}, z: {layerZ}" />
                         {/if}
                         {#if worldMatrix?.[layerX]?.[layerY]?.[layerZ + 1] === 0}
                             <!-- Back -->
-                            <Plane x={cubeX} y={cubeY} z={cubeZ + CUBE_SIZE / 2} width={CUBE_SIZE} height={CUBE_SIZE} image="/block_textures/{TEXTURE_NAMES[cell]}_side.png" brightness={80} />
+                            <Plane x={cubeX} y={cubeY} z={cubeZ + CUBE_SIZE / 2} width={CUBE_SIZE} height={CUBE_SIZE} image="/block_textures/{TEXTURE_NAMES[cell]}_side.png" brightness={80}
+                                style={focusedBlockPosition[0] === layerX && focusedBlockPosition[1] === layerY && focusedBlockPosition[2] === layerZ ? focusedBlockStyle : ""} text="x: {layerX}, y: {layerY}, z: {layerZ}" />
                         {/if}
                     {/if}
                 {/each}
@@ -166,7 +208,9 @@
 
 <span>FPS: {displayedFPS}</span>
 <p>
-    Camera position: {camera.x}, {camera.y}, {camera.z}
+    Camera position (world): {camera.x}, {camera.y}, {camera.z} <br />
+    Camera position (block): {worldPositionToGridCoord(camera.x, camera.y, camera.z)} <br />
+    Focused block position: {focusedBlockPosition}
 </p>
 
 <style>
